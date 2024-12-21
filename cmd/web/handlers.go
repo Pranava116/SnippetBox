@@ -13,16 +13,21 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	ts, err := template.ParseFiles("./ui/html/pages/home.tmpl.html")
+	files := []string{
+		"./ui/html/pages/base.tmpl.html",
+		"./ui/html/pages/home.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
+	}
+	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		log.Fatal(err)
 		http.Error(w, "Internal server error", 501)
 
 	}
-	err = ts.Execute(w, nil)
+	err = ts.ExecuteTemplate(w, "base", nil)
 	if err != nil {
 		log.Print(err.Error())
-		http.Error(w, "Inter nal server error", 501)
+		http.Error(w, "Internal server error", 501)
 	}
 	fmt.Fprintf(w, "Displaying all the snippets")
 }
